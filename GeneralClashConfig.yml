@@ -112,6 +112,14 @@ dns:
 #   DoT: 以 tls:// 开头的 DNS 服务器。拥有更高的安全性和查询效率，但端口有可能被管制或封锁。
 #   若要了解更多关于 DoH/DoT 相关技术，请自行查阅规范文档。
 
+tun:
+  enable: true
+  stack: system # 使用 system 需要 Clash Premium 2021.05.08 及更高版本
+  dns-hijack:
+    - 198.18.0.2:53 # 请勿更改
+  auto-route: true
+  auto-detect-interface: true # 自动检测出口网卡
+
 # 代理组
 # 下面这3个不要引到订阅里去 要不会出错
 # Will be ignored after profile selection
