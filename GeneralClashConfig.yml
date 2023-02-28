@@ -56,7 +56,6 @@ experimental:
 # 注意: hosts 在 fake-ip 模式下不生效
 hosts:
     'cn.bing.com': 13.107.21.200
-    'cn.bing.com': 204.79.197.200
 #   '*.clash.dev': 127.0.0.1
 #   'alpha.clash.dev': '::1'
 
