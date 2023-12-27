@@ -3,5 +3,3 @@ DOMAIN-SUFFIX,accounts.autodesk.com
 DOMAIN-SUFFIX,snapdrop.net
 DOMAIN-SUFFIX,olympics.com
 DOMAIN-SUFFIX,ctgu.edu.cn
-DOMAIN-SUFFIX,baidu.kinh.cc
-IP-CIDR,43.139.121.14/32,no-resolve
