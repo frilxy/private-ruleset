@@ -1,0 +1,812 @@
+{
+  "log": {
+    "disabled": false,
+    "level": "info",
+    "timestamp": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "path": "cache.db",
+      "cache_id": "my_profile2",
+      "store_fakeip": true
+    },
+    "clash_api": {
+      "external_ui": "ui",
+      "external_controller": "0.0.0.0:9090",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8",
+        "detour": "Proxy"
+      },
+      {
+        "tag": "fallback",
+        "address": "8.8.8.8",
+        "address_resolver": "google",
+        "detour": "Proxy"
+      },
+      {
+        "tag": "local-dns",
+        "address": "223.5.5.5",
+        "detour": "direct"
+      },
+      {
+        "tag": "block-dns",
+        "address": "rcode://success"
+      },
+      {
+        "tag": "Youtubedns",
+        "address": "8.8.8.8",
+        "detour": "Youtube"
+      },
+      {
+        "tag": "Telegramdns",
+        "address": "8.8.8.8",
+        "detour": "Telegram"
+      },
+      {
+        "tag": "Openaidns",
+        "address": "8.8.8.8",
+        "detour": "Openai"
+      },
+      {
+        "tag": "Googledns",
+        "address": "8.8.8.8",
+        "detour": "Google"
+      },
+      {
+        "tag": "Directdns",
+        "address": "8.8.8.8",
+        "detour": "Direct"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local-dns"
+      },
+      {
+        "rule_set": [
+          "Youtube0"
+        ],
+        "server": "Youtubedns"
+      },
+      {
+        "rule_set": [
+          "Telegram1"
+        ],
+        "server": "Telegramdns"
+      },
+      {
+        "rule_set": [
+          "Openai0"
+        ],
+        "server": "Openaidns"
+      },
+      {
+        "rule_set": [
+          "Google0"
+        ],
+        "server": "Googledns"
+      },
+      {
+        "rule_set": [
+          "Direct1"
+        ],
+        "server": "local-dns"
+      },
+      {
+        "query_type": [
+          "A"
+        ],
+        "rewrite_ttl": 1,
+        "server": "fallback"
+      }
+    ],
+    "strategy": "ipv4_only"
+  },
+  "inbounds": [
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "::",
+      "listen_port": 8888,
+      "sniff": true
+    },
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "tun0",
+      "address": [
+        "172.18.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "stack": "system",
+      "sniff": true,
+      "auto_route": true,
+      "sniff_override_destination": true,
+      "strict_route": true
+    },
+    {
+      "type": "direct",
+      "listen": "::",
+      "listen_port": 53,
+      "sniff": true,
+      "tag": "dns-in"
+    }
+  ],
+  "route": {
+    "rule_set": [
+      {
+        "type": "remote",
+        "format": "binary",
+        "download_detour": "Proxy",
+        "tag": "Youtube0",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/youtube.srs"
+      },
+      {
+        "type": "remote",
+        "format": "binary",
+        "download_detour": "Proxy",
+        "tag": "Telegram0",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geoip/telegram.srs"
+      },
+      {
+        "type": "remote",
+        "format": "binary",
+        "download_detour": "Proxy",
+        "tag": "Telegram1",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/telegram.srs"
+      },
+      {
+        "type": "remote",
+        "format": "binary",
+        "download_detour": "Proxy",
+        "tag": "Openai0",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/openai.srs"
+      },
+      {
+        "type": "remote",
+        "format": "binary",
+        "download_detour": "Proxy",
+        "tag": "Google0",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/google.srs"
+      },
+      {
+        "type": "remote",
+        "format": "binary",
+        "download_detour": "Proxy",
+        "tag": "Direct0",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geoip/cn.srs"
+      },
+      {
+        "type": "remote",
+        "format": "binary",
+        "download_detour": "Proxy",
+        "tag": "Direct1",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/cn.srs"
+      }
+    ],
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "port": 53,
+        "outbound": "dns-out"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "port": 853
+          },
+          {
+            "network": "udp",
+            "port": 443
+          },
+          {
+            "protocol": "stun"
+          }
+        ],
+        "outbound": "block"
+      },
+      {
+        "rule_set": [
+          "Youtube0"
+        ],
+        "outbound": "Youtube"
+      },
+      {
+        "rule_set": [
+          "Telegram0",
+          "Telegram1"
+        ],
+        "outbound": "Telegram"
+      },
+      {
+        "rule_set": [
+          "Openai0"
+        ],
+        "outbound": "Openai"
+      },
+      {
+        "rule_set": [
+          "Google0"
+        ],
+        "outbound": "Google"
+      },
+      {
+        "rule_set": [
+          "Direct0",
+          "Direct1"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      }
+    ],
+    "auto_detect_interface": true,
+    "final": "Proxy"
+  },
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "outbounds": [
+        "全部",
+        "🇭🇰 香港",
+        "🇹🇼 台湾",
+        "🇯🇵 日本",
+        "🇸🇬 新加披",
+        "🇺🇸 美国"
+      ],
+      "interrupt_exist_connections": true,
+      "type": "selector"
+    },
+    {
+      "tag": "Youtube",
+      "outbounds": [
+        "Proxy",
+        "全部",
+        "🇭🇰 香港",
+        "🇹🇼 台湾",
+        "🇯🇵 日本",
+        "🇸🇬 新加披",
+        "🇺🇸 美国"
+      ],
+      "interrupt_exist_connections": true,
+      "type": "selector"
+    },
+    {
+      "tag": "Telegram",
+      "outbounds": [
+        "Proxy",
+        "全部",
+        "🇭🇰 香港",
+        "🇹🇼 台湾",
+        "🇯🇵 日本",
+        "🇸🇬 新加披",
+        "🇺🇸 美国"
+      ],
+      "interrupt_exist_connections": true,
+      "type": "selector"
+    },
+    {
+      "tag": "Openai",
+      "outbounds": [
+        "Proxy",
+        "全部",
+        "🇭🇰 香港",
+        "🇹🇼 台湾",
+        "🇯🇵 日本",
+        "🇸🇬 新加披",
+        "🇺🇸 美国"
+      ],
+      "interrupt_exist_connections": true,
+      "type": "selector"
+    },
+    {
+      "tag": "Google",
+      "outbounds": [
+        "Proxy",
+        "全部",
+        "🇭🇰 香港",
+        "🇹🇼 台湾",
+        "🇯🇵 日本",
+        "🇸🇬 新加披",
+        "🇺🇸 美国"
+      ],
+      "interrupt_exist_connections": true,
+      "type": "selector"
+    },
+    {
+      "tag": "全部",
+      "outbounds": [
+        "官网: landing.ouonetwork.com",
+        "如您无法更新 请从官网拉取最新订阅",
+        "🇭🇰 Hong Kong 01",
+        "🇭🇰 Hong Kong 02",
+        "🇭🇰 Hong Kong 03",
+        "🇭🇰 Hong Kong 04",
+        "🇭🇰 Hong Kong 05",
+        "🇹🇼 Taiwan 01",
+        "🇹🇼 Taiwan 02",
+        "🇹🇼 Taiwan 03",
+        "🇹🇼 Taiwan 04",
+        "🇹🇼 Taiwan 05",
+        "🇸🇬 Singapore 01",
+        "🇸🇬 Singapore 02",
+        "🇸🇬 Singapore 03",
+        "🇸🇬 Singapore 04",
+        "🇸🇬 Singapore 05",
+        "🇯🇵 Japan 01",
+        "🇯🇵 Japan 02",
+        "🇯🇵 Japan 03",
+        "🇯🇵 Japan 04",
+        "🇯🇵 Japan 05",
+        "🇺🇸 United States 01",
+        "🇺🇸 United States 02",
+        "🇺🇸 United States 03",
+        "🇺🇸 United States 04",
+        "🇺🇸 United States 05",
+        "🇩🇪 Germany 01",
+        "🇩🇪 Germany 02",
+        "🇬🇧 Britain 01",
+        "🇬🇧 Britain 02",
+        "🇱🇺 Luxembourg 01",
+        "🇦🇷 Argentina 01",
+        "🇹🇷 Turkey 01",
+        "🇮🇳 India 01"
+      ],
+      "interrupt_exist_connections": true,
+      "type": "selector"
+    },
+    {
+      "tag": "🇭🇰 香港",
+      "outbounds": [
+        "🇭🇰 Hong Kong 01",
+        "🇭🇰 Hong Kong 02",
+        "🇭🇰 Hong Kong 03",
+        "🇭🇰 Hong Kong 04",
+        "🇭🇰 Hong Kong 05"
+      ],
+      "type": "urltest",
+      "url": "https://www.gstatic.com/generate_204",
+      "tolerance": 50,
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇹🇼 台湾",
+      "outbounds": [
+        "官网: landing.ouonetwork.com",
+        "🇹🇼 Taiwan 01",
+        "🇹🇼 Taiwan 02",
+        "🇹🇼 Taiwan 03",
+        "🇹🇼 Taiwan 04",
+        "🇹🇼 Taiwan 05"
+      ],
+      "type": "urltest",
+      "url": "https://www.gstatic.com/generate_204",
+      "tolerance": 50,
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇯🇵 日本",
+      "outbounds": [
+        "🇯🇵 Japan 01",
+        "🇯🇵 Japan 02",
+        "🇯🇵 Japan 03",
+        "🇯🇵 Japan 04",
+        "🇯🇵 Japan 05"
+      ],
+      "type": "urltest",
+      "url": "https://www.gstatic.com/generate_204",
+      "tolerance": 50,
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇸🇬 新加披",
+      "outbounds": [
+        "🇸🇬 Singapore 01",
+        "🇸🇬 Singapore 02",
+        "🇸🇬 Singapore 03",
+        "🇸🇬 Singapore 04",
+        "🇸🇬 Singapore 05"
+      ],
+      "type": "urltest",
+      "url": "https://www.gstatic.com/generate_204",
+      "tolerance": 50,
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇺🇸 美国",
+      "outbounds": [
+        "🇺🇸 United States 01",
+        "🇺🇸 United States 02",
+        "🇺🇸 United States 03",
+        "🇺🇸 United States 04",
+        "🇺🇸 United States 05"
+      ],
+      "type": "urltest",
+      "url": "https://www.gstatic.com/generate_204",
+      "tolerance": 50,
+      "interrupt_exist_connections": false
+    },
+    {
+      "type": "direct",
+      "tag": "➜ Direct"
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    },
+    {
+      "tag": "官网: landing.ouonetwork.com",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48778,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "如您无法更新 请从官网拉取最新订阅",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48778,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇭🇰 Hong Kong 01",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48778,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇭🇰 Hong Kong 02",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48777,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇭🇰 Hong Kong 03",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48775,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇭🇰 Hong Kong 04",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 42004,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇭🇰 Hong Kong 05",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 42003,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇹🇼 Taiwan 01",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48595,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇹🇼 Taiwan 02",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48596,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇹🇼 Taiwan 03",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48597,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇹🇼 Taiwan 04",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48598,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇹🇼 Taiwan 05",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48599,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇸🇬 Singapore 01",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 48890,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇸🇬 Singapore 02",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 20909,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇸🇬 Singapore 03",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 20910,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇸🇬 Singapore 04",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 20911,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇸🇬 Singapore 05",
+      "server": "n1eubce2cbv.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 20912,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇯🇵 Japan 01",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35000,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇯🇵 Japan 02",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 38000,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇯🇵 Japan 03",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35004,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇯🇵 Japan 04",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35006,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇯🇵 Japan 05",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35007,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇺🇸 United States 01",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35027,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇺🇸 United States 02",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 34010,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇺🇸 United States 03",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35016,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇺🇸 United States 04",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35018,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇺🇸 United States 05",
+      "server": "s1dnfoevra3dx.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35015,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇩🇪 Germany 01",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 38305,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇩🇪 Germany 02",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 30684,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇬🇧 Britain 01",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 22398,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇬🇧 Britain 02",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 25520,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇱🇺 Luxembourg 01",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 30735,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇦🇷 Argentina 01",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 35011,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇹🇷 Turkey 01",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 53697,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    },
+    {
+      "tag": "🇮🇳 India 01",
+      "server": "581f0676f6cbbfcf.h5dg9l1jwpczvs91dekk.pw",
+      "server_port": 53690,
+      "type": "shadowsocks",
+      "method": "aes-128-gcm",
+      "password": "dad988ee-c383-4af4-9f3d-1f09d74d2565",
+      "plugin": "",
+      "plugin_opts": ""
+    }
+  ]
+}
