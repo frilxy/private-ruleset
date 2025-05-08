@@ -15,15 +15,14 @@
 # Example:
 # GLOBAL_GITHUB_PROXY_URL="https://my_github_proxy_url_prefix.com"
 
-GLOBAL_GITHUB_PROXY_URL=""
+GLOBAL_GITHUB_PROXY_URL="https://ghproxy.net"
 
 
 # Optional.
 # If you are concerned about privacy and security issues, simply delete the SUBSCRIPTION_URLS array and subscribe to your servers manually.
 SUBSCRIPTION_URLS=(
   # Change to your own subscription URL(s).
-  "https://abc.com?subscribe=123#Proxy_Server_01"
-  "https://xyz.com?subscribe=456#Proxy_Server_02"
+  "https://oss2.cauenvao.click/api/v1/client/subscribe?token=e15247190ffeac86243090ba9e172e1e"
 )
 
 # Required.
