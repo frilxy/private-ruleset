@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "domain_suffix": [
+        "sample.mgstage.com",
+        "co.jp",
+        "dmm.com",
+        "mercari.com",
+        "fril.jp"
+      ]
+    }
+  ]
+}
